@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +14,12 @@ class QuestionController extends AbstractController
     /**
      * @Route("/", name="app_question_homepage")
      * @param Environment $environment
+     * @param LoggerInterface $logger
      * @return Response
      */
-    public function homepage(Environment $environment): Response
+    public function homepage(Environment $environment, LoggerInterface $logger): Response
     {
+        $logger->notice('We are logging!');
         dump($environment, $this);
         return $this->render('homepage.html.twig');
     }
@@ -24,12 +27,13 @@ class QuestionController extends AbstractController
     /**
      * @Route("/questions/{slug}", name="app_question_show")
      * @param $slug
+     * @param MarkdownParserInterface $parser
      * @return Response
      */
     public function show($slug, MarkdownParserInterface $parser): Response
     {
         $answers = [
-            'This is a test answer',
+            'This is a **test** answer',
             'This is another test answer',
             'This is a third test answer',
         ];
