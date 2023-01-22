@@ -12,6 +12,7 @@ class QuestionController extends AbstractController
 {
     /**
      * @Route("/", name="app_question_homepage")
+     * @param Environment $environment
      * @return Response
      */
     public function homepage(Environment $environment): Response
@@ -33,6 +34,7 @@ class QuestionController extends AbstractController
             'This is a third test answer',
         ];
         dump($slug, $this);
-        return $this->render('show.html.twig', ['question' => $slug, 'answers' => $answers]);
+        $questionText = "I've been turned into a cat, any thoughts on how to turn back? While I'm **adorable**, I don't really care for cat food.";
+        return $this->render('show.html.twig', ['question' => $slug, 'answers' => $answers, 'questionText' => $questionText]);
     }
 }
