@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\MarkdownHelperService;
 use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
 use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerInterface;
@@ -29,23 +30,19 @@ class QuestionController extends AbstractController
     /**
      * @Route("/questions/{slug}", name="app_question_show")
      * @param $slug
-     * @param MarkdownParserInterface $parser
-     * @param CacheInterface $cache
+     * @param MarkdownHelperService $markdownHelperService
      * @return Response
+     * Autowiring works (in all methods of class) only in controllers that extend abstract controller, but also in any other class that is not controller => but only in __construct() method of such class
      */
-    public function show($slug, MarkdownParserInterface $parser, CacheInterface $cache): Response
+    public function show($slug, MarkdownHelperService $markdownHelperService): Response
     {
         $answers = [
             'This is a **test** answer',
             'This is another test answer',
             'This is a third test answer',
         ];
-        dump($parser->transformMarkdown($slug), $this);
         $questionText = "I've been turned into a cat, any thoughts on how to turn back? While I'm **adorable**, I don't really care for cat food.";
-        $questionText = $cache->get('question-' . md5($questionText), function (CacheItemInterface $cacheItem) use ($questionText, $parser) {
-            $cacheItem->expiresAfter(60);
-            return $parser->transformMarkdown($questionText);
-        });
+        $questionText = $markdownHelperService->parseQuestion($questionText);
         return $this->render('show.html.twig', ['question' => $slug, 'answers' => $answers, 'questionText' => $questionText]);
     }
 }
