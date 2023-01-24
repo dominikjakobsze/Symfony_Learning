@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 use Twig\Environment;
 
 class QuestionController extends AbstractController
@@ -28,9 +29,10 @@ class QuestionController extends AbstractController
      * @Route("/questions/{slug}", name="app_question_show")
      * @param $slug
      * @param MarkdownParserInterface $parser
+     * @param CacheInterface $cache
      * @return Response
      */
-    public function show($slug, MarkdownParserInterface $parser): Response
+    public function show($slug, MarkdownParserInterface $parser, CacheInterface $cache): Response
     {
         $answers = [
             'This is a **test** answer',
@@ -39,6 +41,10 @@ class QuestionController extends AbstractController
         ];
         dump($parser->transformMarkdown($slug), $this);
         $questionText = "I've been turned into a cat, any thoughts on how to turn back? While I'm **adorable**, I don't really care for cat food.";
+        $questionText = $cache->get('question-' . md5($questionText), function () use ($questionText, $parser) {
+            return $parser->transformMarkdown($questionText);
+
+        });
         return $this->render('show.html.twig', ['question' => $slug, 'answers' => $answers, 'questionText' => $questionText]);
     }
 }
