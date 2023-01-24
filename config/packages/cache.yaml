@@ -1,19 +1,27 @@
 framework:
     cache:
-        # Unique name of your app: used to compute stable namespaces for cache keys.
-        #prefix_seed: your_vendor_name/app_name
+    #The name of .yaml files are not important, you can name it whatever you like, the important
+    #thing is the name of the main key in .yaml file which is "framework" in this case.
+    #this framework key is the same as the one in config/packages/framework.yaml
+    #using two or more times the same key in different .yaml files won't
+    #override the previous one, it will merge them together.
 
-        # The "app" cache stores to the filesystem by default.
-        # The data in this cache should persist between deploys.
-        # Other options include:
+    
+    
+    # Unique name of your app: used to compute stable namespaces for cache keys.
+    #prefix_seed: your_vendor_name/app_name
 
-        # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
+    # The "app" cache stores to the filesystem by default.
+    # The data in this cache should persist between deploys.
+    # Other options include:
 
-        # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
-        #app: cache.adapter.apcu
+    # Redis
+    #app: cache.adapter.redis
+    #default_redis_provider: redis://localhost
 
-        # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+    # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
+    #app: cache.adapter.apcu
+
+    # Namespaced pools use the above "app" backend by default
+    #pools:
+    #my.dedicated.cache: null
