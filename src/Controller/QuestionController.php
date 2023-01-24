@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
+use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,9 +42,9 @@ class QuestionController extends AbstractController
         ];
         dump($parser->transformMarkdown($slug), $this);
         $questionText = "I've been turned into a cat, any thoughts on how to turn back? While I'm **adorable**, I don't really care for cat food.";
-        $questionText = $cache->get('question-' . md5($questionText), function () use ($questionText, $parser) {
+        $questionText = $cache->get('question-' . md5($questionText), function (CacheItemInterface $cacheItem) use ($questionText, $parser) {
+            $cacheItem->expiresAfter(60);
             return $parser->transformMarkdown($questionText);
-
         });
         return $this->render('show.html.twig', ['question' => $slug, 'answers' => $answers, 'questionText' => $questionText]);
     }
